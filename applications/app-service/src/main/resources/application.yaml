@@ -1,0 +1,36 @@
+server:
+  port: 9003
+spring:
+  application:
+    name: "Reportes"
+  devtools:
+    add-properties: false
+  h2:
+    console:
+      enabled: true
+      path: "/h2"
+  profiles:
+    include: null
+
+  cloud:
+    aws:
+      region:
+        static: us-east-1
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+  dynamodb:
+      endpoint: ""
+  sqs:
+      cola-reportes-crediYa: https://sqs.us-east-1.amazonaws.com/911708507629/cola-reportes-crediYa
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+cors:
+  allowed-origins: "http://localhost:4200,http://localhost:9003"
