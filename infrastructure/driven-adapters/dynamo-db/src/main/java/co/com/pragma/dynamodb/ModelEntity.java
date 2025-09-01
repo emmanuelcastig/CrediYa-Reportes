@@ -6,6 +6,8 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttri
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @DynamoDbBean
@@ -13,13 +15,15 @@ public class ModelEntity {
 
     private String id;
     private int cantidadPrestamosAprobados;
+    private BigDecimal montoTotalPrestamosAprobados;
 
     public ModelEntity() {
     }
 
-    public ModelEntity(String id, int cantidadPrestamosAprobados) {
+    public ModelEntity(String id, int cantidadPrestamosAprobados, BigDecimal montoTotalPrestamosAprobados) {
         this.id = id;
         this.cantidadPrestamosAprobados = cantidadPrestamosAprobados;
+        this.montoTotalPrestamosAprobados = montoTotalPrestamosAprobados;
     }
 
     @DynamoDbPartitionKey
@@ -35,6 +39,11 @@ public class ModelEntity {
     @DynamoDbAttribute("cantidadPrestamosAprobados")
     public int getCantidadPrestamosAprobados() {
         return cantidadPrestamosAprobados;
+    }
+
+    @DynamoDbAttribute("montoTotalPrestamosAprobados")
+    public BigDecimal getMontoTotalPrestamosAprobados() {
+        return montoTotalPrestamosAprobados;
     }
 
     public void setCantidadPrestamosAprobados(int cantidadPrestamosAprobados) {

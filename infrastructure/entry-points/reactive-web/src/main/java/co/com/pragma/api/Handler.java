@@ -1,6 +1,5 @@
 package co.com.pragma.api;
 
-import co.com.pragma.usecase.reporte.ReporteUseCase;
 import co.com.pragma.usecase.reporte.in.ObtenerReporte;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

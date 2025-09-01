@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,4 +15,5 @@ import lombok.Setter;
 public class Reporte {
     private String id;
     private int cantidadPrestamosAprobados;
+    private BigDecimal montoTotalPrestamosAprobados;
 }

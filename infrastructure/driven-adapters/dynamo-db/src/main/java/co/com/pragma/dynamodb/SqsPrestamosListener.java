@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,17 +25,19 @@ public class SqsPrestamosListener {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode json = mapper.readTree(mensajeJson);
             String decision = json.get("decision").asText();
+            BigDecimal monto = json.get("monto").decimalValue();
 
-            log.info("decision recibida: {}", decision);
+            log.info("decision recibida: {}, monto recibido: {}", decision, monto);
 
             if ("APROBADO".equals(decision) || "APROBADA".equals(decision)) {
                 String id = "prestamos_aprobados";
                 log.info("Incrementando prestamos aprobados para el reporte ID: {}", id);
-
+                log.info("Incrementando monto total de prestamos aprobados en {} con valor: {}", id, monto);
                 reporteRepository.incrementarPrestamosAprobados(id)
+                        .then(reporteRepository.incrementarMontoTotalPrestamosAprobados(id, monto))
                         .subscribe(
-                                unused -> log.info("Contador actualizado en DynamoDB"),
-                                error -> log.error("Error actualizando contador: {}", error.getMessage(), error)
+                                unused -> log.info("Contador y monto actualizados en DynamoDB"),
+                                error -> log.error("Error actualizando reporte: {}", error.getMessage(), error)
                         );
             }
         } catch (Exception e) {

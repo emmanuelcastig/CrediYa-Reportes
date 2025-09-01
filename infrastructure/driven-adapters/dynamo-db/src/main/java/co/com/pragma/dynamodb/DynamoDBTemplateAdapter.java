@@ -15,6 +15,7 @@ import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ public class DynamoDBTemplateAdapter
         ).map(entity -> Reporte.builder()
                 .id(entity.getId())
                 .cantidadPrestamosAprobados(entity.getCantidadPrestamosAprobados())
+                .montoTotalPrestamosAprobados(entity.getMontoTotalPrestamosAprobados())
                 .build());
     }
 
@@ -54,6 +56,24 @@ public class DynamoDBTemplateAdapter
                                 " :zero) + :inc")
                         .expressionAttributeValues(Map.of(
                                 ":inc", AttributeValue.builder().n("1").build(),
+                                ":zero", AttributeValue.builder().n("0").build()
+                        ))
+                )
+        ).then();
+    }
+
+    @Override
+    public Mono<Void> incrementarMontoTotalPrestamosAprobados(String id, BigDecimal monto) {
+        Map<String, AttributeValue> key = Map.of("id", AttributeValue.builder().s(id).build());
+
+        return Mono.fromFuture(
+                dynamoDbAsyncClient.updateItem(builder -> builder
+                        .tableName("ReportePrestamos")
+                        .key(key)
+                        .updateExpression("SET montoTotalPrestamosAprobados = if_not_exists(montoTotalPrestamosAprobados," +
+                                " :zero) + :monto")
+                        .expressionAttributeValues(Map.of(
+                                ":monto", AttributeValue.builder().n(monto.toPlainString()).build(),
                                 ":zero", AttributeValue.builder().n("0").build()
                         ))
                 )
